@@ -26,6 +26,12 @@ function shuffle(array) {
 }
 
 
+function compareCards(cardOne, cardTwo) {
+  return cardOne.picture === cardtTwo.picture;
+}
+
+
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
