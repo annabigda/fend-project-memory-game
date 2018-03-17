@@ -30,6 +30,9 @@ function compareCards(cardOne, cardTwo) {
   return cardOne.picture === cardtTwo.picture;
 }
 
+function uncoverCard(card){
+  card.uncovered = true;
+}
 
 
 /*
