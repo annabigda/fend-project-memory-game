@@ -37,19 +37,18 @@ function stateToClass(state){
   }
 }
 
-function cardToHtml(card,i) {
-  return   `<li id='card-${i}' class='${stateToClass(card.state)}'><i class='${card.picture}'></i></li>`
+function cardToHtml(card) {
+  return   `<li id='card-${card.index}' class='${stateToClass(card.state)}'><i class='${card.picture}'></i></li>`
 
 }
 
-function renderCard(card, i){
+function renderCard(card){
     console.log(card);
-    console.log(i);
     var cardList = $("#deck")
     cardList.append(card.html)
 
-    $(`#card-${i}`).click(function(){
-      console.log(i)
+    $(`#card-${card.index}`).click(function(){
+      console.log(card.index)
     }
   )
 }
@@ -57,10 +56,12 @@ function renderCard(card, i){
 function setup() {
   var cards = createDeck()
   var shuffledCards = shuffle(cards);
-  for (i = 0; i < shuffledCards.length; i++) {
 
-    shuffledCards[i].html = cardToHtml(shuffledCards[i],i)
-    renderCard(shuffledCards[i],i);
+  for (i = 0; i < shuffledCards.length; i++) {
+    var card = shuffledCards[i];
+    card.index = i;
+    card.html = cardToHtml(card);
+    renderCard(card);
   }
 }
 
