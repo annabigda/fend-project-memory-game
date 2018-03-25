@@ -2,6 +2,71 @@
  * Create a list that holds all of your cards
  */
 
+$(document).ready(setup)
+
+function createDeck() {
+
+  return [
+    {name: "diamond", picture: "fa-diamond", state: "covered"},
+    {name: "diamond", picture: "fa-diamond", state: "covered"},
+    {name: "paper-plane", picture: "fa-paper-plane-o", state: "covered"},
+    {name: "paper-plane", picture: "fa-paper-plane-o", state: "covered"},
+    {name: "anchor", picture: "fa-anchor", state: "covered"},
+    {name: "anchor", picture: "fa-anchor", state: "covered"},
+    {name: "bolt", picture: "fa-bolt", state: "covered"},
+    {name: "bolt", picture: "fa-bolt", state: "covered"},
+    {name: "cube", picture: "fa-cube", state: "covered"},
+    {name: "cube", picture: "fa-cube", state: "covered"},
+    {name: "anchor", picture: "fa-anchor", state: "covered"},
+    {name: "anchor", picture: "fa-anchor", state: "covered"},
+    {name: "leaf", picture: "fa-leaf", state: "covered"},
+    {name: "leaf", picture: "fa-leaf", state: "covered"},
+    {name: "bicycle", picture: "fa-bicycle", state: "covered"},
+    {name: "bicycle", picture: "fa-bicycle", state: "covered"},
+  ]
+}
+
+function stateToClass(state){
+  if (state === "covered") {
+    return "card";
+  } else if (state === "uncovered"){
+    return "card open show";
+  } else {
+    console.log("card match");
+    return "card match";
+  }
+}
+
+function cardToHtml(card,i) {
+  return   `<li id='card-${i}' class='${stateToClass(card.state)}'><i class='${card.picture}'></i></li>`
+
+}
+
+function renderCard(card, i){
+    console.log(card);
+    console.log(i);
+    var cardList = $("#deck")
+    cardList.append(card.html)
+
+    $(`#card-${i}`).click(function(){
+      console.log(i)
+    }
+  )
+}
+
+function setup() {
+  var cards = createDeck()
+  var shuffledCards = shuffle(cards);
+  for (i = 0; i < shuffledCards.length; i++) {
+
+    shuffledCards[i].html = cardToHtml(shuffledCards[i],i)
+    renderCard(shuffledCards[i],i);
+  }
+}
+
+
+
+
 
 /*
  * Display the cards on the page
@@ -25,13 +90,18 @@ function shuffle(array) {
     return array;
 }
 
-
 function compareCards(cardOne, cardTwo) {
-  return cardOne.picture === cardtTwo.picture;
+  if (cardOne.picture === cardtTwo.picture){
+    cardOne.state = "matched";
+    cardTwo.state = "matched";
+  } else {
+    cardOne.state = "covered";
+    cardTwo.state = "covered";
+  }
 }
 
 function uncoverCard(card){
-  card.uncovered = true;
+  card.state = "uncovered";
 }
 
 
