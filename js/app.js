@@ -42,13 +42,25 @@ function cardToHtml(card) {
 
 }
 
+function uncoverCard(card){
+  card.state = "uncovered";
+}
+
 function renderCard(card){
     console.log(card);
+    card.html = cardToHtml(card);
     var cardList = $("#deck")
+    if ($(`#card-${card.index}`).length === 0) {
     cardList.append(card.html)
+  } else {
+    $(`#card-${card.index}`).replaceWith(card.html)
+  }
 
     $(`#card-${card.index}`).click(function(){
-      console.log(card.index)
+      uncoverCard(card);
+      renderCard(card);
+      var uncoveredCards = [];
+      uncoveredCards.push(card);
     }
   )
 }
@@ -60,7 +72,6 @@ function setup() {
   for (i = 0; i < shuffledCards.length; i++) {
     var card = shuffledCards[i];
     card.index = i;
-    card.html = cardToHtml(card);
     renderCard(card);
   }
 }
@@ -101,9 +112,7 @@ function compareCards(cardOne, cardTwo) {
   }
 }
 
-function uncoverCard(card){
-  card.state = "uncovered";
-}
+
 
 
 /*
