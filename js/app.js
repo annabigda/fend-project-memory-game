@@ -7,22 +7,22 @@ $(document).ready(setup)
 function createDeck() {
 
   return [
-    {name: "diamond", picture: "fa-diamond", state: "covered"},
-    {name: "diamond", picture: "fa-diamond", state: "covered"},
-    {name: "paper-plane", picture: "fa-paper-plane-o", state: "covered"},
-    {name: "paper-plane", picture: "fa-paper-plane-o", state: "covered"},
-    {name: "anchor", picture: "fa-anchor", state: "covered"},
-    {name: "anchor", picture: "fa-anchor", state: "covered"},
-    {name: "bolt", picture: "fa-bolt", state: "covered"},
-    {name: "bolt", picture: "fa-bolt", state: "covered"},
-    {name: "cube", picture: "fa-cube", state: "covered"},
-    {name: "cube", picture: "fa-cube", state: "covered"},
-    {name: "anchor", picture: "fa-anchor", state: "covered"},
-    {name: "anchor", picture: "fa-anchor", state: "covered"},
+    {name: "diamond", picture: "fa fa-diamond", state: "covered"},
+    {name: "diamond", picture: "fa fa-diamond", state: "covered"},
+    {name: "paper-plane", picture: "fa fa-paper-plane-o", state: "covered"},
+    {name: "paper-plane", picture: "fa fa-paper-plane-o", state: "covered"},
+    {name: "anchor", picture: "fa fa-anchor", state: "covered"},
+    {name: "anchor", picture: "fa fa-anchor", state: "covered"},
+    {name: "bolt", picture: "fa fa-bolt", state: "covered"},
+    {name: "bolt", picture: "fa fa-bolt", state: "covered"},
+    {name: "cube", picture: "fa fa-cube", state: "covered"},
+    {name: "cube", picture: "fa fa-cube", state: "covered"},
+    {name: "anchor", picture: "fa fa-anchor", state: "covered"},
+    {name: "anchor", picture: "fa fa-anchor", state: "covered"},
     {name: "leaf", picture: "fa-leaf", state: "covered"},
-    {name: "leaf", picture: "fa-leaf", state: "covered"},
-    {name: "bicycle", picture: "fa-bicycle", state: "covered"},
-    {name: "bicycle", picture: "fa-bicycle", state: "covered"},
+    {name: "leaf", picture: "fa fa-leaf", state: "covered"},
+    {name: "bicycle", picture: "fa fa-bicycle", state: "covered"},
+    {name: "bicycle", picture: "fa fa-bicycle", state: "covered"},
   ]
 }
 
