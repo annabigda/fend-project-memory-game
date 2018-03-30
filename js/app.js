@@ -4,6 +4,8 @@
 
 $(document).ready(setup)
 
+var uncoveredCards = [];
+
 function createDeck() {
 
   return [
@@ -17,9 +19,9 @@ function createDeck() {
     {name: "bolt", picture: "fa fa-bolt", state: "covered"},
     {name: "cube", picture: "fa fa-cube", state: "covered"},
     {name: "cube", picture: "fa fa-cube", state: "covered"},
-    {name: "anchor", picture: "fa fa-anchor", state: "covered"},
-    {name: "anchor", picture: "fa fa-anchor", state: "covered"},
-    {name: "leaf", picture: "fa-leaf", state: "covered"},
+    {name: "anchor", picture: "fa fa-bomb", state: "covered"},
+    {name: "anchor", picture: "fa fa-bomb", state: "covered"},
+    {name: "leaf", picture: "fa fa-leaf", state: "covered"},
     {name: "leaf", picture: "fa fa-leaf", state: "covered"},
     {name: "bicycle", picture: "fa fa-bicycle", state: "covered"},
     {name: "bicycle", picture: "fa fa-bicycle", state: "covered"},
@@ -46,8 +48,8 @@ function uncoverCard(card){
   card.state = "uncovered";
 }
 
+
 function renderCard(card){
-    console.log(card);
     card.html = cardToHtml(card);
     var cardList = $("#deck")
     if ($(`#card-${card.index}`).length === 0) {
@@ -56,14 +58,66 @@ function renderCard(card){
     $(`#card-${card.index}`).replaceWith(card.html)
   }
 
+  function compareCards(cardOne, cardTwo) {
+    if (cardOne.picture === cardtTwo.picture){
+      cardOne.state = "matched";
+      cardTwo.state = "matched";
+    } else {
+      cardOne.state = "covered";
+      cardTwo.state = "covered";
+    }
+  }
+
     $(`#card-${card.index}`).click(function(){
+
+      if (uncoveredCards.length > 1){
+        return false
+        }
+
+      if (card.state === "matched") {
+        return false
+      }
+
       uncoverCard(card);
       renderCard(card);
-      var uncoveredCards = [];
+
+
       uncoveredCards.push(card);
+      console.log(uncoveredCards);
+
+      if (uncoveredCards.length > 1){
+
+        var cardOne = uncoveredCards[uncoveredCards.length-2];
+        var cardTwo = uncoveredCards[uncoveredCards.length-1];
+        console.log("card one and two", cardOne, cardTwo);
+
+        if(cardOne.name === cardTwo.name){
+          cardOne.state = "matched";
+          renderCard(cardOne);
+          cardTwo.state = "matched";
+          renderCard(cardTwo);
+          uncoveredCards = [];
+        } else {
+
+          setTimeout(function(){
+            cardOne.state = "covered";
+            cardTwo.state = "covered";
+
+            renderCard(cardOne);
+            renderCard(cardTwo);
+
+            uncoveredCards = [];
+
+          }, 3000)
+
+
+        }
+      }
     }
   )
 }
+
+
 
 function setup() {
   var cards = createDeck()
@@ -102,15 +156,7 @@ function shuffle(array) {
     return array;
 }
 
-function compareCards(cardOne, cardTwo) {
-  if (cardOne.picture === cardtTwo.picture){
-    cardOne.state = "matched";
-    cardTwo.state = "matched";
-  } else {
-    cardOne.state = "covered";
-    cardTwo.state = "covered";
-  }
-}
+
 
 
 
