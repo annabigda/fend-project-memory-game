@@ -6,6 +6,9 @@ $(document).ready(setup)
 
 var uncoveredCards = [];
 var counter = 0;
+var timer = 0;
+var timerInterval;
+var cards;
 
 function createDeck() {
 
@@ -54,6 +57,11 @@ function renderCounter(counterHtml){
   a.html(counterHtml);
 }
 
+function renderTimer(timerParam){
+
+    $("#timer").html(`${timerParam} seconds`)
+}
+
 function starRatingToHtml(starRating){
 
   if(starRating === 3){
@@ -67,10 +75,11 @@ function starRatingToHtml(starRating){
         <li><i class="fa fa-star"></i></li>
         <li><i class="fa fa-star"></i></li>
       </ul>`
-  } else {
-    return `<ul class="stars" id="starRating">
+    }  else {
+      return `<ul class="stars" id="starRating">
         <li><i class="fa fa-star"></i></li>
       </ul>`
+
   }
 }
 
@@ -90,10 +99,25 @@ function counterToRating(counterParam){
   }
 }
 
+function updateTimer(){
+  renderTimer(timer);
+  timer = timer + 1;
+}
+
+$("#restart").click(setup);
+
 function uncoverCard(card){
   card.state = "uncovered";
 }
 
+function hasPlayerWon(){
+  for (i = 0; i < cards.length; i++){
+    if (cards[i].state !== "matched") {
+      return false;
+    }
+  }
+return true;
+}
 
 function renderCard(card){
     card.html = cardToHtml(card);
@@ -104,14 +128,18 @@ function renderCard(card){
     $(`#card-${card.index}`).replaceWith(card.html)
   }
 
-
     $(`#card-${card.index}`).click(function(){
+
+      if (!timerInterval){
+        timerInterval = setInterval(updateTimer,1000)
+      }
+
 
       if (uncoveredCards.length > 1){
         return false
         }
 
-      if (card.state === "matched") {
+      if (card.state !== "covered") {
         return false
       }
 
@@ -144,6 +172,16 @@ function renderCard(card){
           cardTwo.state = "matched";
           renderCard(cardTwo);
           uncoveredCards = [];
+
+          if (hasPlayerWon()) {
+            clearInterval(timerInterval);
+
+            var choice = confirm(`Congratulation! It took you ${timer} seconds to win the game. Your star rating was ${counterToRating(counter)}. Do you want to play again?`)
+
+              if(choice){
+                setup();
+            }
+          }
         } else {
 
           setTimeout(function(){
@@ -167,7 +205,7 @@ function renderCard(card){
 
 
 function setup() {
-  var cards = createDeck()
+  cards = createDeck();
   var shuffledCards = shuffle(cards);
 
   for (i = 0; i < shuffledCards.length; i++) {
@@ -175,6 +213,19 @@ function setup() {
     card.index = i;
     renderCard(card);
   }
+
+  timer = 0;
+  clearInterval(timerInterval);
+  $("#timer").html("");
+  timerInterval = undefined;
+
+  counter = 0;
+  var counterHtml = counterToHtml(counter);
+  renderCounter(counterHtml);
+
+  var starRatingHtml = starRatingToHtml(3);
+  renderStarRating(starRatingHtml)
+
 }
 
 
