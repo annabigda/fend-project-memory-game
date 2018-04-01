@@ -5,6 +5,7 @@
 $(document).ready(setup)
 
 var uncoveredCards = [];
+var counter = 0;
 
 function createDeck() {
 
@@ -19,8 +20,8 @@ function createDeck() {
     {name: "bolt", picture: "fa fa-bolt", state: "covered"},
     {name: "cube", picture: "fa fa-cube", state: "covered"},
     {name: "cube", picture: "fa fa-cube", state: "covered"},
-    {name: "anchor", picture: "fa fa-bomb", state: "covered"},
-    {name: "anchor", picture: "fa fa-bomb", state: "covered"},
+    {name: "bomb", picture: "fa fa-bomb", state: "covered"},
+    {name: "bomb", picture: "fa fa-bomb", state: "covered"},
     {name: "leaf", picture: "fa fa-leaf", state: "covered"},
     {name: "leaf", picture: "fa fa-leaf", state: "covered"},
     {name: "bicycle", picture: "fa fa-bicycle", state: "covered"},
@@ -41,7 +42,52 @@ function stateToClass(state){
 
 function cardToHtml(card) {
   return   `<li id='card-${card.index}' class='${stateToClass(card.state)}'><i class='${card.picture}'></i></li>`
+}
 
+function counterToHtml(counter){
+  return `<span class="moves">${counter}</span> Moves`
+}
+
+function renderCounter(counterHtml){
+  var a;
+  a = $("#counter");
+  a.html(counterHtml);
+}
+
+function starRatingToHtml(starRating){
+
+  if(starRating === 3){
+    return `<ul class="stars" id="starRating">
+        <li><i class="fa fa-star"></i></li>
+        <li><i class="fa fa-star"></i></li>
+        <li><i class="fa fa-star"></i></li>
+      </ul>`
+  } else if (starRating === 2){
+    return `<ul class="stars" id="starRating">
+        <li><i class="fa fa-star"></i></li>
+        <li><i class="fa fa-star"></i></li>
+      </ul>`
+  } else {
+    return `<ul class="stars" id="starRating">
+        <li><i class="fa fa-star"></i></li>
+      </ul>`
+  }
+}
+
+
+
+function renderStarRating(startRatingHtml){
+  $("#starRating").replaceWith(startRatingHtml);
+}
+
+function counterToRating(counterParam){
+  if (counterParam < 3){
+    return 3;
+  } else if (counterParam < 5){
+    return 2;
+  } else {
+    return 1;
+  }
 }
 
 function uncoverCard(card){
@@ -58,15 +104,6 @@ function renderCard(card){
     $(`#card-${card.index}`).replaceWith(card.html)
   }
 
-  function compareCards(cardOne, cardTwo) {
-    if (cardOne.picture === cardtTwo.picture){
-      cardOne.state = "matched";
-      cardTwo.state = "matched";
-    } else {
-      cardOne.state = "covered";
-      cardTwo.state = "covered";
-    }
-  }
 
     $(`#card-${card.index}`).click(function(){
 
@@ -85,7 +122,17 @@ function renderCard(card){
       uncoveredCards.push(card);
       console.log(uncoveredCards);
 
-      if (uncoveredCards.length > 1){
+      if (uncoveredCards.length === 2){
+
+
+        counter = counter + 1;
+        var counterHtml = counterToHtml(counter);
+        renderCounter(counterHtml);
+
+
+
+        var starRatingHtml = starRatingToHtml(counterToRating(counter))
+        renderStarRating(starRatingHtml);
 
         var cardOne = uncoveredCards[uncoveredCards.length-2];
         var cardTwo = uncoveredCards[uncoveredCards.length-1];
