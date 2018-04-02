@@ -2,16 +2,20 @@
  * Create a list that holds all of your cards
  */
 
+const threeStarsMoves = 12;
+const twoStarsMoves = 24;
+
+let uncoveredCards = [],
+  counter = 0,
+  timer = 0,
+  timerInterval,
+  cards;
+
 $(document).ready(setup)
 
-var uncoveredCards = [];
-var counter = 0;
-var timer = 0;
-var timerInterval;
-var cards;
+$("#restart").click(setup);
 
 function createDeck() {
-
   return [
     {name: "diamond", picture: "fa fa-diamond", state: "covered"},
     {name: "diamond", picture: "fa fa-diamond", state: "covered"},
@@ -32,13 +36,41 @@ function createDeck() {
   ]
 }
 
+function lockCardsInOpenPosition(cardOne, cardTwo) {
+  cardOne.state = "matched";
+  cardTwo.state = "matched";
+  renderCard(cardOne);
+  renderCard(cardTwo);
+}
+
+function coverCards(cardOne, cardTwo) {
+  cardOne.state = "covered";
+  cardTwo.state = "covered";
+
+  renderCard(cardOne);
+  renderCard(cardTwo);
+}
+
+function counterToHtml(counter){
+  return `<span class="moves">${counter}</span> Moves`
+}
+
+function renderCounter(){
+  const counterHtml = counterToHtml(counter);
+  $("#counter").html(counterHtml);
+}
+
+function incrementCounter() {
+  counter = counter + 1;
+  renderCounter();
+}
+
 function stateToClass(state){
   if (state === "covered") {
     return "card";
   } else if (state === "uncovered"){
     return "card open show";
   } else {
-    console.log("card match");
     return "card match";
   }
 }
@@ -47,67 +79,55 @@ function cardToHtml(card) {
   return   `<li id='card-${card.index}' class='${stateToClass(card.state)}'><i class='${card.picture}'></i></li>`
 }
 
-function counterToHtml(counter){
-  return `<span class="moves">${counter}</span> Moves`
-}
-
-function renderCounter(counterHtml){
-  var a;
-  a = $("#counter");
-  a.html(counterHtml);
+function updateTimer(){
+  renderTimer(timer);
+  timer = timer + 1;
 }
 
 function renderTimer(timerParam){
-
-    $("#timer").html(`${timerParam} seconds`)
+  $("#timer").html(`${timerParam} seconds`)
 }
 
 function starRatingToHtml(starRating){
-
   if(starRating === 3){
-    return `<ul class="stars" id="starRating">
+    return `
+     <ul class="stars" id="starRating">
         <li><i class="fa fa-star"></i></li>
         <li><i class="fa fa-star"></i></li>
         <li><i class="fa fa-star"></i></li>
-      </ul>`
+     </ul>`
   } else if (starRating === 2){
-    return `<ul class="stars" id="starRating">
+    return `
+    <ul class="stars" id="starRating">
         <li><i class="fa fa-star"></i></li>
         <li><i class="fa fa-star"></i></li>
-      </ul>`
-    }  else {
-      return `<ul class="stars" id="starRating">
+    </ul>`
+  }  else {
+    return `
+    <ul class="stars" id="starRating">
         <li><i class="fa fa-star"></i></li>
-      </ul>`
-
+    </ul>`
   }
 }
 
-
-
-function renderStarRating(startRatingHtml){
-  $("#starRating").replaceWith(startRatingHtml);
+function renderStarRating(){
+  const starRatingHtml = starRatingToHtml(counterToRating(counter))
+  $("#starRating").replaceWith(starRatingHtml);
 }
 
 function counterToRating(counterParam){
-  if (counterParam < 3){
+  if (counterParam < threeStarsMoves){
     return 3;
-  } else if (counterParam < 5){
+  } else if (counterParam < twoStarsMoves){
     return 2;
   } else {
     return 1;
   }
 }
 
-function updateTimer(){
-  renderTimer(timer);
-  timer = timer + 1;
-}
-
-$("#restart").click(setup);
-
 function uncoverCard(card){
   card.state = "uncovered";
+  renderCard(card);
 }
 
 function hasPlayerWon(){
@@ -116,121 +136,90 @@ function hasPlayerWon(){
       return false;
     }
   }
-return true;
+  return true;
 }
 
 function renderCard(card){
-    card.html = cardToHtml(card);
-    var cardList = $("#deck")
-    if ($(`#card-${card.index}`).length === 0) {
-    cardList.append(card.html)
+  const html = cardToHtml(card),
+    cardList = $("#deck"),
+    cardSelector = `#card-${card.index}`;
+
+  if ($(cardSelector).length === 0) {
+    cardList.append(html)
   } else {
-    $(`#card-${card.index}`).replaceWith(card.html)
+    $(cardSelector).replaceWith(html)
   }
 
-    $(`#card-${card.index}`).click(function(){
+  $(cardSelector).click(function(){
 
-      if (!timerInterval){
-        timerInterval = setInterval(updateTimer,1000)
-      }
+    if (!timerInterval){
+      timerInterval = setInterval(updateTimer,1000)
+    }
 
+    if (uncoveredCards.length > 1){
+      return false
+    }
 
-      if (uncoveredCards.length > 1){
-        return false
-        }
+    if (card.state !== "covered") {
+      return false
+    }
 
-      if (card.state !== "covered") {
-        return false
-      }
+    uncoverCard(card);
 
-      uncoverCard(card);
-      renderCard(card);
+    uncoveredCards.push(card);
 
+    if (uncoveredCards.length === 2){
+      const cardOne = uncoveredCards[uncoveredCards.length-2],
+        cardTwo = uncoveredCards[uncoveredCards.length-1];
 
-      uncoveredCards.push(card);
-      console.log(uncoveredCards);
+      incrementCounter()
 
-      if (uncoveredCards.length === 2){
+      renderStarRating();
 
+      if(cardOne.name === cardTwo.name){
+        lockCardsInOpenPosition(cardOne, cardTwo);
+        uncoveredCards = [];
 
-        counter = counter + 1;
-        var counterHtml = counterToHtml(counter);
-        renderCounter(counterHtml);
+        if (hasPlayerWon()) {
+          clearInterval(timerInterval);
+          const successMessage = `Congratulation! It took you ${timer} seconds to win the game. Your star rating was ${counterToRating(counter)}. Do you want to play again?`,
+            choice = confirm(successMessage);
 
-
-
-        var starRatingHtml = starRatingToHtml(counterToRating(counter))
-        renderStarRating(starRatingHtml);
-
-        var cardOne = uncoveredCards[uncoveredCards.length-2];
-        var cardTwo = uncoveredCards[uncoveredCards.length-1];
-        console.log("card one and two", cardOne, cardTwo);
-
-        if(cardOne.name === cardTwo.name){
-          cardOne.state = "matched";
-          renderCard(cardOne);
-          cardTwo.state = "matched";
-          renderCard(cardTwo);
-          uncoveredCards = [];
-
-          if (hasPlayerWon()) {
-            clearInterval(timerInterval);
-
-            var choice = confirm(`Congratulation! It took you ${timer} seconds to win the game. Your star rating was ${counterToRating(counter)}. Do you want to play again?`)
-
-              if(choice){
-                setup();
-            }
+          if(choice){
+            setup();
           }
-        } else {
-
-          setTimeout(function(){
-            cardOne.state = "covered";
-            cardTwo.state = "covered";
-
-            renderCard(cardOne);
-            renderCard(cardTwo);
-
-            uncoveredCards = [];
-
-          }, 3000)
-
-
         }
+      } else {
+        setTimeout(function(){
+          coverCards(cardOne, cardTwo);
+          uncoveredCards = [];
+        }, 500)
       }
     }
+  }
   )
 }
 
-
-
 function setup() {
   cards = createDeck();
-  var shuffledCards = shuffle(cards);
+  const shuffledCards = shuffle(cards);
 
   for (i = 0; i < shuffledCards.length; i++) {
-    var card = shuffledCards[i];
+    const card = shuffledCards[i];
     card.index = i;
     renderCard(card);
   }
 
   timer = 0;
+  counter = 0;
+
   clearInterval(timerInterval);
   $("#timer").html("");
   timerInterval = undefined;
 
-  counter = 0;
-  var counterHtml = counterToHtml(counter);
-  renderCounter(counterHtml);
-
-  var starRatingHtml = starRatingToHtml(3);
-  renderStarRating(starRatingHtml)
-
+  renderCounter();
+  renderStarRating()
 }
-
-
-
-
 
 /*
  * Display the cards on the page
@@ -253,11 +242,6 @@ function shuffle(array) {
 
     return array;
 }
-
-
-
-
-
 
 /*
  * set up the event listener for a card. If a card is clicked:
