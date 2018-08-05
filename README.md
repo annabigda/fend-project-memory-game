@@ -3,18 +3,26 @@
 ## Table of Contents
 
 * [Instructions](#instructions)
-* [Contributing](#contributing)
+* [Files](#files)
 
 ## Instructions
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+Open `index.html` in your browser and the game should start.
 
-To get started, open `js/app.js` and start building out the app's functionality
+The game consists in finding all the matching cards.
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
+On each turn you can click on 2 cards.
 
-## Contributing
+If they are the same you leave them uncovered and select two more.
 
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
+If they are different you need to turn them back and the next turn begins.
 
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+For a complete description of the game see https://en.wikipedia.org/wiki/Concentration_(game)
+
+## Files
+
+The `javascript` files are in `js/app.js`
+
+The `CSS` files are in `css/app.css`
+
+The `HTML` files are in `index.html`

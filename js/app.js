@@ -15,6 +15,7 @@ $(document).ready(setup)
 
 $("#restart").click(setup);
 
+// Create a new deck
 function createDeck() {
   return [
     {name: "diamond", picture: "fa fa-diamond", state: "covered"},
@@ -36,6 +37,7 @@ function createDeck() {
   ]
 }
 
+// Change cards to matched
 function lockCardsInOpenPosition(cardOne, cardTwo) {
   cardOne.state = "matched";
   cardTwo.state = "matched";
@@ -43,6 +45,7 @@ function lockCardsInOpenPosition(cardOne, cardTwo) {
   renderCard(cardTwo);
 }
 
+// Change cards to covered
 function coverCards(cardOne, cardTwo) {
   cardOne.state = "covered";
   cardTwo.state = "covered";
@@ -51,6 +54,7 @@ function coverCards(cardOne, cardTwo) {
   renderCard(cardTwo);
 }
 
+// Counter functions
 function counterToHtml(counter){
   return `<span class="moves">${counter}</span> Moves`
 }
@@ -65,6 +69,7 @@ function incrementCounter() {
   renderCounter();
 }
 
+// Based on the state of the card add the correct class
 function stateToClass(state){
   if (state === "covered") {
     return "card";
@@ -88,6 +93,7 @@ function renderTimer(timerParam){
   $("#timer").html(`${timerParam} seconds`)
 }
 
+// Based on the star rating show the number of stars
 function starRatingToHtml(starRating){
   if(starRating === 3){
     return `
@@ -139,6 +145,7 @@ function hasPlayerWon(){
   return true;
 }
 
+// Add or replace a card in the game
 function renderCard(card){
   const html = cardToHtml(card),
     cardList = $("#deck"),
@@ -168,6 +175,7 @@ function renderCard(card){
 
     uncoveredCards.push(card);
 
+    // If there are 2 uncovered cards we check whether they are the same
     if (uncoveredCards.length === 2){
       const cardOne = uncoveredCards[uncoveredCards.length-2],
         cardTwo = uncoveredCards[uncoveredCards.length-1];
@@ -190,6 +198,7 @@ function renderCard(card){
           }
         }
       } else {
+      // We wait a bit before turning them so the user can see them
         setTimeout(function(){
           coverCards(cardOne, cardTwo);
           uncoveredCards = [];
@@ -200,6 +209,7 @@ function renderCard(card){
   )
 }
 
+// Setup the deck and start the game
 function setup() {
   cards = createDeck();
   const shuffledCards = shuffle(cards);
